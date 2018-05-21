@@ -10,7 +10,7 @@ var siteUrl = require("./services/siteUrl");
 
 // imports all libraries
 var greeting = require("./dialogs/greetings");
-
+var reset = require('./dialogs/reset');
 
 let connector = new teams.TeamsChatConnector({
     appId: '', // bot id
@@ -37,13 +37,18 @@ function listen() {
 
 server.post('/api/v1/bot/messages', listen());
 
-
 // Creating the universal bot, with connector
 // send the greeting default DialogWaterfallStep
 let bot = new builder.UniversalBot(connector, (session) => session.replaceDialog(greeting.default.name));
 
 // Adding libraries
 bot.library(greeting.default.createLibrary());
+bot.library(reset.default.createLibrary());
+
+// regex triggers
+bot.beginDialogAction('restart', 'reset:conversation', { matches: /^restart/i });
+bot.beginDialogAction('reset', 'reset:everything', { matches: /^reset/i });
+
 
 bot.on("conversationUpdate", (message) => console.log(message));
 
