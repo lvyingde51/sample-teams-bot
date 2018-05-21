@@ -5,6 +5,9 @@ let server = restify.createServer();
 var builder = require("botbuilder");
 var teams = require("botbuilder-teams");
 
+// imports all libraries
+var greeting = require("./dialogs/greetings");
+
 
 let connector = new teams.TeamsChatConnector({
     appId: '', // bot id
@@ -13,16 +16,16 @@ let connector = new teams.TeamsChatConnector({
 
 // console.log(connector);
 
-server.get('/echo/:name', (req, res, next) => {
-    res.send(req.params);
-    return next();
-});
 
 server.post('/api/v1/bot/messages', connector.listen());
 
-let bot = new builder.UniversalBot(connector, function (session) {
-    session.send("You said: %s", session.message.text);
-});
+
+// Creating the universal bot, with connector
+// send the greeting default DialogWaterfallStep
+let bot = new builder.UniversalBot(connector, (session) => session.replaceDialog(greeting.default.name));
+
+// Adding libraries
+bot.library(greeting.default.createLibrary());
 
 bot.on("conversationUpdate", (message) => console.log(message));
 
