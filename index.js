@@ -1,3 +1,4 @@
+// @ts-check
 let restify = require('restify');
 let server = restify.createServer();
 
@@ -18,7 +19,10 @@ server.get('/echo/:name', (req, res, next) => {
 });
 
 server.post('/api/v1/bot/messages', connector.listen());
-let bot = new builder.UniversalBot(connector);
+
+let bot = new builder.UniversalBot(connector, function (session) {
+    session.send("You said: %s", session.message.text);
+});
 
 bot.on("conversationUpdate", (message) => console.log(message));
 
