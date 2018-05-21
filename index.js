@@ -1,6 +1,7 @@
 // @ts-check
 const express = require('express');
 const app = express();
+const dotenv = require('dotenv').config()
 
 var builder = require("botbuilder");
 var teams = require("botbuilder-teams");
@@ -13,8 +14,8 @@ var greeting = require("./dialogs/greetings");
 var reset = require('./dialogs/reset');
 
 let connector = new teams.TeamsChatConnector({
-    appId: '', // bot id
-    appPassword: '', // bot secret
+    appId:  process.env.MicrosoftAppId, // bot id
+    appPassword: process.env.MicrosoftAppPassword, // bot secret
 });
 
 // wrapper around connect.listen() to be able to catch the local url
