@@ -1,6 +1,6 @@
 // @ts-check
-let restify = require('restify');
-let server = restify.createServer();
+const express = require('express');
+const app = express();
 
 var builder = require("botbuilder");
 var teams = require("botbuilder-teams");
@@ -17,25 +17,22 @@ let connector = new teams.TeamsChatConnector({
     appPassword: '', // bot secret
 });
 
-// console.log(connector);
-
-
-
 // wrapper around connect.listen() to be able to catch the local url
-var connectorListener = connector.listen();
-// wrapper
-function listen() {
+let connectorListener = connector.listen();
+
+const listen = () => {
     return (req, res, next) => {
         // Save url in a static object
         siteUrl.SiteUrl.set(new url.URL(`http://${req.headers["host"]}`));
 
         console.log(siteUrl.SiteUrl.get())
         // @ts-ignore
+
         connectorListener(req, res, next);
     };
 }
 
-server.post('/api/v1/bot/messages', listen());
+app.post('/api/v1/bot/messages', listen());
 
 // Creating the universal bot, with connector
 // send the greeting default DialogWaterfallStep
@@ -49,7 +46,6 @@ bot.library(reset.default.createLibrary());
 bot.beginDialogAction('restart', 'reset:conversation', { matches: /^restart/i });
 bot.beginDialogAction('reset', 'reset:everything', { matches: /^reset/i });
 
-
 bot.on("conversationUpdate", (message) => console.log(message));
 
-server.listen(8080, () => console.log('Listening on port 8080'));
+app.listen(8080, () => console.log('Listening on port 8080'));
