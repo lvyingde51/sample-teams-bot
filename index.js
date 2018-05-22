@@ -42,7 +42,7 @@ let bot = new builder.UniversalBot(connector, (session) => session.replaceDialog
 // Adding libraries
 bot.library(greeting.default.createLibrary());
 bot.library(reset.default.createLibrary());
-
+ 
 // regex triggers
 bot.beginDialogAction('restart', 'reset:conversation', { matches: /^restart/i });
 bot.beginDialogAction('reset', 'reset:everything', { matches: /^reset/i });

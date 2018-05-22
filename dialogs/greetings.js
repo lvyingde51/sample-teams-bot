@@ -1,6 +1,4 @@
-// @ts-check
 const builder = require("botbuilder");
-
 const lib = new builder.Library('greeting');
 
 lib.dialog('start', [

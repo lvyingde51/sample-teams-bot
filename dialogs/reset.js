@@ -1,9 +1,12 @@
 const builder = require("botbuilder");
-let lib = new builder.Library('reset');
+
+const lib = new builder.Library('reset');
 
 lib.dialog('everything', [
     (session, args, skip) => {
-        Object.keys(session.userData).forEach(key => delete session.userData[key]);
+        for(let key in Object.keys(session.userData)) {
+            delete session.userData[key];
+        }
         session.endConversation();
         session.send('Conversation ended and restarted, profile deleted.');
         session.endDialog();
