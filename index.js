@@ -35,6 +35,19 @@ const listen = () => {
 
 app.post('/api/v1/bot/messages', listen());
 
+app.get('/wesTest', (req, res) => {
+    let serviceUrl = req.query.serviceUrl;
+    let conversationId = req.query.conversationId;
+
+    connector.fetchMembers(serviceUrl, conversationId, (err, result) => {
+        if(err) {
+            console.log('error: ', err);
+        } else {
+            res.send(JSON.stringify(result));
+        }
+    });
+});
+
 // Creating the universal bot, with connector
 // send the greeting default DialogWaterfallStep
 let bot = new builder.UniversalBot(connector, (session) => session.replaceDialog(greeting.default.name));
@@ -47,6 +60,11 @@ bot.library(reset.default.createLibrary());
 bot.beginDialogAction('restart', 'reset:conversation', { matches: /^restart/i });
 bot.beginDialogAction('reset', 'reset:everything', { matches: /^reset/i });
 
-bot.on("conversationUpdate", (message) => console.log(message));
+bot.on("conversationUpdate", (message) => {
+    console.log('convoUpdate', message);
+    // let conversationId = message.address.conversation.id;
+    // let serviceUrl = message.address.serviceUrl;
+    // console.log('conversation id & serviceUrl', conversationId, serviceUrl);
+});
 
 app.listen(8080, () => console.log('Listening on port 8080'));
